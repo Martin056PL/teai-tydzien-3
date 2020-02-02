@@ -11,4 +11,6 @@ public interface CarService {
     CarResponseDTO getCarById(Long id);
 
     CarResponseDTO addNewCar(CarRequestDTO carRequestDTO);
+
+    CarResponseDTO editCarById(CarRequestDTO carRequestDTO, Long id);
 }

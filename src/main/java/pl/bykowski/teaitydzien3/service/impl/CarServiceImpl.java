@@ -25,20 +25,35 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarResponseDTO> getAllCars(){
+    public List<CarResponseDTO> getAllCars() {
         List<Car> carList = repository.getAllList();
         return carList.stream().map(car -> modelMapper.map(car, CarResponseDTO.class)).collect(Collectors.toList());
     }
 
     @Override
-    public CarResponseDTO getCarById(Long id){
+    public CarResponseDTO getCarById(Long id) {
         Car car = repository.getCarById(id);
         return modelMapper.map(car, CarResponseDTO.class);
     }
 
     @Override
-    public CarResponseDTO addNewCar(CarRequestDTO carRequestDTO){
+    public CarResponseDTO addNewCar(CarRequestDTO carRequestDTO) {
         Car car = repository.addToList(modelMapper.map(carRequestDTO, Car.class));
-        return modelMapper.map(car,CarResponseDTO.class);
+        return modelMapper.map(car, CarResponseDTO.class);
+    }
+
+    @Override
+    public CarResponseDTO editCarById(CarRequestDTO carRequestDTO, Long id) {
+        Car carFromRepository = repository.getCarById(id);
+        Car updatedCar = resignAttributesFromDtoToEntity(modelMapper.map(carRequestDTO, Car.class), carFromRepository);
+        Car savedCar = repository.updateCarById(updatedCar, id);
+        return modelMapper.map(savedCar, CarResponseDTO.class);
+    }
+
+    private Car resignAttributesFromDtoToEntity(Car carFromDto, Car carEntity) {
+        carEntity.setColor(carFromDto.getColor());
+        carEntity.setMark(carFromDto.getMark());
+        carEntity.setModel(carFromDto.getModel());
+        return carEntity;
     }
 }

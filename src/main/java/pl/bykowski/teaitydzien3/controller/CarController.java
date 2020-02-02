@@ -36,6 +36,11 @@ public class CarController {
         return ResponseEntity.of(Optional.of(carService.addNewCar(carRequestDTO)));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<CarResponseDTO> editCarById(@RequestBody CarRequestDTO carRequestDTO, @PathVariable Long id){
+        return ResponseEntity.ok(carService.editCarById(carRequestDTO,id));
+    }
+
 
 
 

@@ -39,7 +39,11 @@ public class CarRepository {
         return car;
     }
 
-
+    public Car updateCarById(Car newCar, Long id) {
+        int index = listOfCars.indexOf(getCarById(id));
+        listOfCars.set(index, newCar);
+        return listOfCars.get(index);
+    }
 
 
 }

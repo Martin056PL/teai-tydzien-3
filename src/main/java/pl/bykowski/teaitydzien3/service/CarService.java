@@ -4,6 +4,7 @@ import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
 import pl.bykowski.teaitydzien3.dto.response.CarResponseDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CarService {
     List<CarResponseDTO> getAllCars();
@@ -12,5 +13,9 @@ public interface CarService {
 
     CarResponseDTO addNewCar(CarRequestDTO carRequestDTO);
 
-    CarResponseDTO editCarById(CarRequestDTO carRequestDTO, Long id);
+    CarResponseDTO replaceAllCarById(CarRequestDTO carRequestDTO, Long id);
+
+    CarResponseDTO editProperValuesCarById(Map<String, Object> map, Long id);
+
+    void deleteCarById(Long id);
 }

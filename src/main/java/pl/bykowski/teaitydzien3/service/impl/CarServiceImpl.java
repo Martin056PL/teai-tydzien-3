@@ -10,6 +10,7 @@ import pl.bykowski.teaitydzien3.repository.CarRepository;
 import pl.bykowski.teaitydzien3.service.CarService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,17 +44,27 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarResponseDTO editCarById(CarRequestDTO carRequestDTO, Long id) {
+    public CarResponseDTO replaceAllCarById(CarRequestDTO carRequestDTO, Long id) {
         Car carFromRepository = repository.getCarById(id);
         Car updatedCar = resignAttributesFromDtoToEntity(modelMapper.map(carRequestDTO, Car.class), carFromRepository);
         Car savedCar = repository.updateCarById(updatedCar, id);
         return modelMapper.map(savedCar, CarResponseDTO.class);
     }
 
-    private Car resignAttributesFromDtoToEntity(Car carFromDto, Car carEntity) {
-        carEntity.setColor(carFromDto.getColor());
-        carEntity.setMark(carFromDto.getMark());
-        carEntity.setModel(carFromDto.getModel());
-        return carEntity;
+    private Car resignAttributesFromDtoToEntity(Car carFromDto, Car carFromRepository) {
+        carFromRepository.setColor(carFromDto.getColor());
+        carFromRepository.setMark(carFromDto.getMark());
+        carFromRepository.setModel(carFromDto.getModel());
+        return carFromRepository;
+    }
+
+    @Override
+    public CarResponseDTO editProperValuesCarById(Map<String, Object> map, Long id) {
+        return modelMapper.map(repository.updateProperCarAttributesById(map, id), CarResponseDTO.class);
+    }
+
+    @Override
+    public void deleteCarById(Long id) {
+        repository.deleteCarById(id);
     }
 }

@@ -1,6 +1,7 @@
 package pl.bykowski.teaitydzien3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
@@ -8,6 +9,7 @@ import pl.bykowski.teaitydzien3.dto.response.CarResponseDTO;
 import pl.bykowski.teaitydzien3.service.CarService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,7 +40,18 @@ public class CarController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CarResponseDTO> editCarById(@RequestBody CarRequestDTO carRequestDTO, @PathVariable Long id){
-        return ResponseEntity.ok(carService.editCarById(carRequestDTO,id));
+        return ResponseEntity.ok(carService.replaceAllCarById(carRequestDTO,id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CarResponseDTO> editProperCarAttributes(@RequestBody Map<String, Object> map, @PathVariable Long id){
+        return ResponseEntity.ok(carService.editProperValuesCarById(map, id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCarById(@PathVariable Long id){
+        carService.deleteCarById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 

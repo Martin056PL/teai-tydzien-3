@@ -25,7 +25,7 @@ public class CarRepository {
     }
 
     public Car getCarById(Long id) {
-        Optional<Car> carResult = listOfCars.stream().filter(car -> car.getId().equals(id)).findAny();
+        Optional<Car> carResult = listOfCars.stream().filter(car -> car.getId().equals(id)).findFirst();
         return carResult.orElseThrow(CarNotFoundException::new);
     }
 
@@ -43,6 +43,27 @@ public class CarRepository {
         int index = listOfCars.indexOf(getCarById(id));
         listOfCars.set(index, newCar);
         return listOfCars.get(index);
+    }
+
+    public Car updateProperCarAttributesById(Map<String, Object> map, Long id) {
+        Car carFromRepository = getCarById(id);
+
+        if (map.containsKey("mark")) {
+            carFromRepository.setMark((String) map.get("mark"));
+        }
+        if (map.containsKey("model")) {
+            carFromRepository.setModel((String) map.get("model"));
+        }
+        if (map.containsKey("color")) {
+            carFromRepository.setColor((CarColor) map.get("color"));
+        }
+
+        return updateCarById(carFromRepository, id);
+
+    }
+
+    public void deleteCarById(Long id) {
+        listOfCars.remove(getCarById(id));
     }
 
 

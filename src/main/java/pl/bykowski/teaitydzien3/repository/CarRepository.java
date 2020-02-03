@@ -21,9 +21,7 @@ public class CarRepository {
         this.listOfCars = new LinkedList<>();
         listOfCars.add(new Car(1L, "Fiat", "Punto", CarColor.RED));
         listOfCars.add(new Car(2L, "Honda", "Civic", CarColor.GREEN));
-        listOfCars.add(new Car(3L, "Audi", "A5", CarColor.BLUE));
-        listOfCars.add(new Car(4L, "Toyota", "Yaris", CarColor.BLACK));
-        listOfCars.add(new Car(5L, "Saab", "95", CarColor.OTHER));
+        listOfCars.add(new Car(3L, "Saab", "95", CarColor.OTHER));
     }
 
     public List<Car> getAllCarList() {

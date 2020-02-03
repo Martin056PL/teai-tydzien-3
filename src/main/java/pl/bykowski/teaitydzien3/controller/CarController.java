@@ -1,7 +1,9 @@
 package pl.bykowski.teaitydzien3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
@@ -13,7 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/cars")
+@RequestMapping(value = "/cars", produces = {
+        MediaType.APPLICATION_JSON_VALUE,
+        MediaType.APPLICATION_XML_VALUE})
 public class CarController {
 
     private final CarService carService;
@@ -23,12 +27,12 @@ public class CarController {
         this.carService = carService;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<CarResponseDTO>> getAllCars() {
         return ResponseEntity.ok(carService.getAllCars());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<CarResponseDTO> getCarById(@PathVariable Long id) {
         return ResponseEntity.ok(carService.getCarById(id));
     }
@@ -43,17 +47,17 @@ public class CarController {
         return ResponseEntity.of(Optional.of(carService.addNewCar(carRequestDTO)));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<CarResponseDTO> editCarById(@RequestBody CarRequestDTO carRequestDTO, @PathVariable Long id) {
         return ResponseEntity.ok(carService.replaceAllCarById(carRequestDTO, id));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<CarResponseDTO> editProperCarAttributes(@RequestBody Map<String, Object> map, @PathVariable Long id) {
         return ResponseEntity.ok(carService.updateProperCarAttributesById(map, id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteCarById(@PathVariable Long id) {
         carService.deleteCarById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

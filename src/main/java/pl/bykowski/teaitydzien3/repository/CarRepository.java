@@ -6,6 +6,7 @@ import pl.bykowski.teaitydzien3.model.Car;
 import pl.bykowski.teaitydzien3.model.CarColor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class CarRepository {
@@ -18,6 +19,7 @@ public class CarRepository {
         listOfCars.add(new Car(2L, "Honda", "Civic", CarColor.GREEN));
         listOfCars.add(new Car(3L, "Audi", "A5", CarColor.BLUE));
         listOfCars.add(new Car(4L, "Toyota", "Yaris", CarColor.BLACK));
+        listOfCars.add(new Car(5L, "Saab", "95", CarColor.OTHER));
     }
 
     public List<Car> getAllList() {
@@ -27,6 +29,10 @@ public class CarRepository {
     public Car getCarById(Long id) {
         Optional<Car> carResult = listOfCars.stream().filter(car -> car.getId().equals(id)).findFirst();
         return carResult.orElseThrow(CarNotFoundException::new);
+    }
+
+    public List<Car> getListOfCarsWithProperColor(CarColor color){
+        return listOfCars.stream().filter(car -> car.getColor().equals(color)).collect(Collectors.toList());
     }
 
     public Car addToList(Car car) {

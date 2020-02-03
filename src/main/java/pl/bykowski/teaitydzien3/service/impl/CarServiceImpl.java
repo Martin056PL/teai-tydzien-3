@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
 import pl.bykowski.teaitydzien3.dto.response.CarResponseDTO;
 import pl.bykowski.teaitydzien3.model.Car;
+import pl.bykowski.teaitydzien3.model.CarColor;
 import pl.bykowski.teaitydzien3.repository.CarRepository;
 import pl.bykowski.teaitydzien3.service.CarService;
 
@@ -35,6 +36,19 @@ public class CarServiceImpl implements CarService {
     public CarResponseDTO getCarById(Long id) {
         Car car = repository.getCarById(id);
         return modelMapper.map(car, CarResponseDTO.class);
+    }
+
+    @Override
+    public List<CarResponseDTO> getListOfCarsByColor(String color) {
+        CarColor carColorEnum;
+        try {
+            carColorEnum = CarColor.valueOf(color);
+        } catch (IllegalArgumentException e) {
+            carColorEnum = CarColor.OTHER;
+        }
+
+        List<Car> carListWithProperColor = repository.getListOfCarsWithProperColor(carColorEnum);
+        return carListWithProperColor.stream().map(car -> modelMapper.map(car, CarResponseDTO.class)).collect(Collectors.toList());
     }
 
     @Override

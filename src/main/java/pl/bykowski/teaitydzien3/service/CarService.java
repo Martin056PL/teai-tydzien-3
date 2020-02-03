@@ -11,6 +11,8 @@ public interface CarService {
 
     CarResponseDTO getCarById(Long id);
 
+    List<CarResponseDTO> getListOfCarsByColor(String color);
+
     CarResponseDTO addNewCar(CarRequestDTO carRequestDTO);
 
     CarResponseDTO replaceAllCarById(CarRequestDTO carRequestDTO, Long id);

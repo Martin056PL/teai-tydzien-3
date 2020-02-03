@@ -2,9 +2,11 @@ package pl.bykowski.teaitydzien3.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
 import pl.bykowski.teaitydzien3.dto.response.CarResponseDTO;
+import pl.bykowski.teaitydzien3.exception.CarNotFoundException;
 import pl.bykowski.teaitydzien3.model.Car;
 import pl.bykowski.teaitydzien3.model.CarColor;
 import pl.bykowski.teaitydzien3.repository.CarRepository;
@@ -17,19 +19,23 @@ import java.util.stream.Collectors;
 @Service
 public class CarServiceImpl implements CarService {
 
-    private ModelMapper modelMapper;
-    private CarRepository repository;
+    private final String exceptionMessage;
+    private final ModelMapper modelMapper;
+    private final CarRepository repository;
 
     @Autowired
-    public CarServiceImpl(ModelMapper modelMapper, CarRepository repository) {
+    public CarServiceImpl(ModelMapper modelMapper, CarRepository repository, @Value("${exception.messages.notFound}") String exceptionMessage) {
         this.modelMapper = modelMapper;
         this.repository = repository;
+        this.exceptionMessage = exceptionMessage;
     }
 
     @Override
     public List<CarResponseDTO> getAllCars() {
-        List<Car> carList = repository.getAllList();
-        return carList.stream().map(car -> modelMapper.map(car, CarResponseDTO.class)).collect(Collectors.toList());
+        List<Car> carList = repository.getAllCarList();
+        return carList.stream()
+                .map(car -> modelMapper.map(car, CarResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -42,18 +48,20 @@ public class CarServiceImpl implements CarService {
     public List<CarResponseDTO> getListOfCarsByColor(String color) {
         CarColor carColorEnum;
         try {
-            carColorEnum = CarColor.valueOf(color);
+            carColorEnum = CarColor.valueOf(color.toUpperCase());
         } catch (IllegalArgumentException e) {
-            carColorEnum = CarColor.OTHER;
+            throw new CarNotFoundException(exceptionMessage);
         }
 
         List<Car> carListWithProperColor = repository.getListOfCarsWithProperColor(carColorEnum);
-        return carListWithProperColor.stream().map(car -> modelMapper.map(car, CarResponseDTO.class)).collect(Collectors.toList());
+        return carListWithProperColor.stream()
+                .map(car -> modelMapper.map(car, CarResponseDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
     public CarResponseDTO addNewCar(CarRequestDTO carRequestDTO) {
-        Car car = repository.addToList(modelMapper.map(carRequestDTO, Car.class));
+        Car car = repository.addCarToList(modelMapper.map(carRequestDTO, Car.class));
         return modelMapper.map(car, CarResponseDTO.class);
     }
 
@@ -73,7 +81,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarResponseDTO editProperValuesCarById(Map<String, Object> map, Long id) {
+    public CarResponseDTO updateProperCarAttributesById(Map<String, Object> map, Long id) {
         return modelMapper.map(repository.updateProperCarAttributesById(map, id), CarResponseDTO.class);
     }
 

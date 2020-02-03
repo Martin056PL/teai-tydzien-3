@@ -17,7 +17,7 @@ public interface CarService {
 
     CarResponseDTO replaceAllCarById(CarRequestDTO carRequestDTO, Long id);
 
-    CarResponseDTO editProperValuesCarById(Map<String, Object> map, Long id);
+    CarResponseDTO updateProperCarAttributesById(Map<String, Object> map, Long id);
 
     void deleteCarById(Long id);
 }

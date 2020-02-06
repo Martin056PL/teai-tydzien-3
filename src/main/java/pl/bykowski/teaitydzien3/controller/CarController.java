@@ -1,7 +1,8 @@
 package pl.bykowski.teaitydzien3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import pl.bykowski.teaitydzien3.service.CarService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/cars", produces = {
@@ -34,7 +37,13 @@ public class CarController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<CarResponseDTO> getCarById(@PathVariable Long id) {
-        return ResponseEntity.ok(carService.getCarById(id));
+
+
+        Link link = linkTo(CarController.class).slash(carService.getCarById(id).getId()).withSelfRel();
+        CarResponseDTO dto = carService.getCarById(id);
+        dto.add(link);
+
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping(params = "color")

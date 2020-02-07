@@ -1,8 +1,8 @@
 package pl.bykowski.teaitydzien3.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.bykowski.teaitydzien3.dto.request.CarRequestDTO;
 import pl.bykowski.teaitydzien3.dto.response.CarResponseDTO;
 import pl.bykowski.teaitydzien3.service.CarService;
+import pl.bykowski.teaitydzien3.service.HateoasCarService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/cars", produces = {
@@ -24,26 +23,24 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class CarController {
 
     private final CarService carService;
+    private final HateoasCarService hateoasCarService;
 
     @Autowired
-    public CarController(CarService carService) {
+    public CarController(CarService carService, HateoasCarService hateoasCarService) {
         this.carService = carService;
+        this.hateoasCarService = hateoasCarService;
     }
 
     @GetMapping()
-    public ResponseEntity<List<CarResponseDTO>> getAllCars() {
-        return ResponseEntity.ok(carService.getAllCars());
+    public ResponseEntity<CollectionModel<CarResponseDTO>> getAllCars() {
+        List<CarResponseDTO> list = carService.getAllCars();
+        return ResponseEntity.ok(hateoasCarService.addLinkToListOfDTOs(list));
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<CarResponseDTO> getCarById(@PathVariable Long id) {
-
-
-        Link link = linkTo(CarController.class).slash(carService.getCarById(id).getId()).withSelfRel();
+    public ResponseEntity<EntityModel<CarResponseDTO>> getCarById(@PathVariable Long id) {
         CarResponseDTO dto = carService.getCarById(id);
-        dto.add(link);
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(hateoasCarService.addLinkToSingleDTO(dto));
     }
 
     @GetMapping(params = "color")
